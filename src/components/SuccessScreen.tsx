@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import Confetti from 'react-confetti'
 import { useTestStore } from '@/store/testStore'
-import { testOffers } from '@/data/testOffers'
+import { testOffers, INDIVIDUAL_TOTAL_PRICE, BUNDLE_TOTAL_PRICE, BUNDLE_SAVINGS_PERCENT } from '@/data/testOffers'
 
 export default function SuccessScreen() {
   const { userInfo, calculateScore, calculateIQ, answers, resetTest } = useTestStore()
@@ -256,9 +256,9 @@ export default function SuccessScreen() {
                   <p className="text-gray-300">Get all 20 tests for one amazing price!</p>
                 </div>
                 <div className="text-center">
-                  <div className="text-gray-400 line-through text-sm">$79.80</div>
-                  <div className="text-4xl font-bold text-gradient from-purple-400 to-pink-400">$19.99</div>
-                  <div className="text-green-400 text-sm font-semibold">Save 75%!</div>
+                  <div className="text-gray-400 line-through text-sm">${INDIVIDUAL_TOTAL_PRICE.toFixed(2)}</div>
+                  <div className="text-4xl font-bold text-gradient from-purple-400 to-pink-400">${BUNDLE_TOTAL_PRICE.toFixed(2)}</div>
+                  <div className="text-green-400 text-sm font-semibold">Save {BUNDLE_SAVINGS_PERCENT}%!</div>
                 </div>
                 <motion.button
                   whileHover={{ scale: 1.05 }}

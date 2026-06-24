@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
-import { testOffers } from '@/data/testOffers'
+import { testOffers, INDIVIDUAL_TOTAL_PRICE, BUNDLE_TOTAL_PRICE, BUNDLE_SAVINGS_PERCENT } from '@/data/testOffers'
 
 // Create transporter for sending emails
 const createTransporter = () => {
@@ -214,8 +214,8 @@ export async function POST(request: Request) {
                       </h3>
                       <p style="margin: 0 0 15px 0; color: #cbd5e1;">Get all 20 tests for one amazing price!</p>
                       <div>
-                        <span style="text-decoration: line-through; color: #64748b;">$79.80</span>
-                        <span style="font-size: 36px; font-weight: bold; color: #a855f7; margin: 0 10px;">$19.99</span>
+                        <span style="text-decoration: line-through; color: #64748b;">$${INDIVIDUAL_TOTAL_PRICE.toFixed(2)}</span>
+                        <span style="font-size: 36px; font-weight: bold; color: #a855f7; margin: 0 10px;">$${BUNDLE_TOTAL_PRICE.toFixed(2)}</span>
                         <span style="color: #22c55e; font-weight: bold;">Save 75%!</span>
                       </div>
                     </div>
@@ -264,12 +264,12 @@ ${category.description} Your IQ of ${iq} places you in the top ${100 - percentil
 
 EXCLUSIVE TEST OFFERS:
 Check out our other cognitive assessments:
-- Emotional Intelligence (EQ) - $2.99
-- Memory & Recall Test - $2.99
-- Logical Reasoning - $2.99
+- Emotional Intelligence (EQ) - $1.99
+- Memory & Recall Test - $1.99
+- Logical Reasoning - $1.99
 - And 17 more tests available!
 
-BUNDLE DEAL: Get all 20 tests for just $19.99 (Save 75%!)
+BUNDLE DEAL: Get all 20 tests for just $${BUNDLE_TOTAL_PRICE.toFixed(2)} (Save ${BUNDLE_SAVINGS_PERCENT}%!)
 
 Thank you for taking the BrainyAK IQ Test!
 
