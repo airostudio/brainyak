@@ -198,9 +198,19 @@ export default function ForBusinessPage() {
         {/* Trusted By */}
         <section className="text-center">
           <p className="text-gray-500 text-sm mb-4">Trusted by organizations worldwide</p>
-          <div className="flex flex-wrap justify-center gap-8 opacity-50">
-            {['Fortune 500', 'Universities', 'HR Firms', 'Research Labs'].map((org, index) => (
-              <div key={index} className="text-gray-400 font-semibold">{org}</div>
+          <div className="flex flex-wrap justify-center gap-6 sm:gap-8">
+            {[
+              { name: 'Global Enterprises', icon: '🏢' },
+              { name: 'Top Universities', icon: '🎓' },
+              { name: 'Talent Agencies', icon: '👥' },
+              { name: 'Tech Companies', icon: '💻' },
+              { name: 'Healthcare Groups', icon: '🏥' },
+              { name: 'Government Agencies', icon: '🏛️' },
+            ].map((org, index) => (
+              <div key={index} className="flex items-center gap-2 text-gray-400">
+                <span className="text-lg">{org.icon}</span>
+                <span className="font-medium text-sm">{org.name}</span>
+              </div>
             ))}
           </div>
         </section>
