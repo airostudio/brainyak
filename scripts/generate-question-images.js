@@ -1,6 +1,12 @@
 /* Premium IQ-test graphic generator.
  * Designs polished SVG artwork and rasterizes to high-res WebP via sharp.
  * Question canvas: 200x200 viewBox -> 600px.  Option canvas: 100x100 -> 320px.
+ *
+ * The generated WebP files are committed to /public/questions, so `sharp` is
+ * NOT a project dependency (it is intentionally excluded from package.json
+ * because its nested node_modules tree breaks Next 14's Vercel build-trace
+ * step — see lovell/sharp#3955). To regenerate the artwork, install sharp
+ * on demand first:  npm i --no-save sharp && npm run gen:images
  */
 const sharp = require('sharp')
 const fs = require('fs')
