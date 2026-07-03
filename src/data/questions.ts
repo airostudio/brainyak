@@ -8,17 +8,38 @@ export interface Question {
   timeLimit: number // seconds
 }
 
-// SVG Pattern Generators
-const createPatternSvg = (shapes: string, bg: string = '#1e293b') => `
+// SVG Pattern Generators with professional styling
+const createPatternSvg = (shapes: string, bg: string = '#0f172a') => `
   <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-    <rect width="200" height="200" fill="${bg}" rx="10"/>
+    <defs>
+      <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#1e293b"/>
+        <stop offset="100%" stop-color="#0f172a"/>
+      </linearGradient>
+      <filter id="glow">
+        <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+        <feMerge>
+          <feMergeNode in="coloredBlur"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+    <rect width="200" height="200" fill="url(#bgGrad)" rx="12"/>
+    <rect x="2" y="2" width="196" height="196" fill="none" stroke="#334155" stroke-width="1" rx="11"/>
     ${shapes}
   </svg>
 `
 
-const createOptionSvg = (shapes: string, bg: string = '#334155') => `
+const createOptionSvg = (shapes: string, bg: string = '#1e293b') => `
   <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <rect width="100" height="100" fill="${bg}" rx="8"/>
+    <defs>
+      <linearGradient id="optBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#1e293b"/>
+        <stop offset="100%" stop-color="#0f172a"/>
+      </linearGradient>
+    </defs>
+    <rect width="100" height="100" fill="url(#optBgGrad)" rx="10"/>
+    <rect x="1" y="1" width="98" height="98" fill="none" stroke="#334155" stroke-width="1" rx="9"/>
     ${shapes}
   </svg>
 `
@@ -30,21 +51,22 @@ export const questions: Question[] = [
     type: 'pattern',
     difficulty: 'easy',
     questionSvg: createPatternSvg(`
-      <circle cx="50" cy="50" r="20" fill="#ec4899"/>
-      <circle cx="100" cy="50" r="20" fill="#8b5cf6"/>
-      <circle cx="150" cy="50" r="20" fill="#ec4899"/>
-      <circle cx="50" cy="100" r="20" fill="#8b5cf6"/>
-      <circle cx="100" cy="100" r="20" fill="#ec4899"/>
-      <circle cx="150" cy="100" r="20" fill="#8b5cf6"/>
-      <circle cx="50" cy="150" r="20" fill="#ec4899"/>
-      <circle cx="100" cy="150" r="20" fill="#8b5cf6"/>
-      <text x="150" y="158" font-size="40" fill="#fbbf24" text-anchor="middle">?</text>
+      <circle cx="50" cy="50" r="18" fill="#ec4899" stroke="#f472b6" stroke-width="2"/>
+      <circle cx="100" cy="50" r="18" fill="#8b5cf6" stroke="#a78bfa" stroke-width="2"/>
+      <circle cx="150" cy="50" r="18" fill="#ec4899" stroke="#f472b6" stroke-width="2"/>
+      <circle cx="50" cy="100" r="18" fill="#8b5cf6" stroke="#a78bfa" stroke-width="2"/>
+      <circle cx="100" cy="100" r="18" fill="#ec4899" stroke="#f472b6" stroke-width="2"/>
+      <circle cx="150" cy="100" r="18" fill="#8b5cf6" stroke="#a78bfa" stroke-width="2"/>
+      <circle cx="50" cy="150" r="18" fill="#ec4899" stroke="#f472b6" stroke-width="2"/>
+      <circle cx="100" cy="150" r="18" fill="#8b5cf6" stroke="#a78bfa" stroke-width="2"/>
+      <circle cx="150" cy="150" r="18" fill="none" stroke="#fbbf24" stroke-width="3" stroke-dasharray="6,4"/>
+      <text x="150" y="156" font-size="28" fill="#fbbf24" text-anchor="middle" font-weight="bold" font-family="system-ui, sans-serif">?</text>
     `),
     options: [
-      createOptionSvg(`<circle cx="50" cy="50" r="20" fill="#ec4899"/>`),
-      createOptionSvg(`<circle cx="50" cy="50" r="20" fill="#8b5cf6"/>`),
-      createOptionSvg(`<circle cx="50" cy="50" r="20" fill="#22c55e"/>`),
-      createOptionSvg(`<rect x="30" y="30" width="40" height="40" fill="#ec4899"/>`),
+      createOptionSvg(`<circle cx="50" cy="50" r="22" fill="#ec4899" stroke="#f472b6" stroke-width="2"/>`),
+      createOptionSvg(`<circle cx="50" cy="50" r="22" fill="#8b5cf6" stroke="#a78bfa" stroke-width="2"/>`),
+      createOptionSvg(`<circle cx="50" cy="50" r="22" fill="#22c55e" stroke="#4ade80" stroke-width="2"/>`),
+      createOptionSvg(`<rect x="28" y="28" width="44" height="44" fill="#ec4899" stroke="#f472b6" stroke-width="2" rx="4"/>`),
     ],
     correctAnswer: 0,
     timeLimit: 30,
@@ -56,16 +78,18 @@ export const questions: Question[] = [
     type: 'sequence',
     difficulty: 'easy',
     questionSvg: createPatternSvg(`
-      <rect x="20" y="80" width="40" height="40" fill="#3b82f6"/>
-      <polygon points="100,60 130,120 70,120" fill="#22c55e"/>
-      <circle cx="170" cy="100" r="25" fill="#f97316"/>
-      <text x="100" y="180" font-size="20" fill="#94a3b8" text-anchor="middle">What comes next?</text>
+      <rect x="22" y="75" width="42" height="42" fill="#3b82f6" stroke="#60a5fa" stroke-width="2" rx="4"/>
+      <polygon points="100,58 132,118 68,118" fill="#22c55e" stroke="#4ade80" stroke-width="2"/>
+      <circle cx="170" cy="97" r="24" fill="#f97316" stroke="#fb923c" stroke-width="2"/>
+      <text x="100" y="175" font-size="16" fill="#94a3b8" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="500">What comes next?</text>
+      <circle cx="100" cy="155" r="16" fill="none" stroke="#fbbf24" stroke-width="2" stroke-dasharray="5,3"/>
+      <text x="100" y="161" font-size="20" fill="#fbbf24" text-anchor="middle" font-weight="bold">?</text>
     `),
     options: [
-      createOptionSvg(`<rect x="30" y="30" width="40" height="40" fill="#3b82f6"/>`),
-      createOptionSvg(`<circle cx="50" cy="50" r="25" fill="#f97316"/>`),
-      createOptionSvg(`<polygon points="50,25 75,75 25,75" fill="#22c55e"/>`),
-      createOptionSvg(`<rect x="30" y="30" width="40" height="40" fill="#ec4899"/>`),
+      createOptionSvg(`<rect x="28" y="28" width="44" height="44" fill="#3b82f6" stroke="#60a5fa" stroke-width="2" rx="4"/>`),
+      createOptionSvg(`<circle cx="50" cy="50" r="24" fill="#f97316" stroke="#fb923c" stroke-width="2"/>`),
+      createOptionSvg(`<polygon points="50,22 78,78 22,78" fill="#22c55e" stroke="#4ade80" stroke-width="2"/>`),
+      createOptionSvg(`<rect x="28" y="28" width="44" height="44" fill="#ec4899" stroke="#f472b6" stroke-width="2" rx="4"/>`),
     ],
     correctAnswer: 0,
     timeLimit: 30,
@@ -77,26 +101,27 @@ export const questions: Question[] = [
     type: 'spatial',
     difficulty: 'medium',
     questionSvg: createPatternSvg(`
-      <g transform="translate(50,50)">
-        <polygon points="0,-30 25,20 -25,20" fill="#8b5cf6"/>
-        <circle cx="0" cy="-10" r="8" fill="#fbbf24"/>
+      <g transform="translate(50,55)">
+        <polygon points="0,-28 24,18 -24,18" fill="#8b5cf6" stroke="#a78bfa" stroke-width="2"/>
+        <circle cx="0" cy="-10" r="7" fill="#fbbf24" stroke="#fcd34d" stroke-width="1.5"/>
       </g>
-      <g transform="translate(100,50) rotate(90)">
-        <polygon points="0,-30 25,20 -25,20" fill="#8b5cf6"/>
-        <circle cx="0" cy="-10" r="8" fill="#fbbf24"/>
+      <g transform="translate(100,55) rotate(90)">
+        <polygon points="0,-28 24,18 -24,18" fill="#8b5cf6" stroke="#a78bfa" stroke-width="2"/>
+        <circle cx="0" cy="-10" r="7" fill="#fbbf24" stroke="#fcd34d" stroke-width="1.5"/>
       </g>
-      <g transform="translate(150,50) rotate(180)">
-        <polygon points="0,-30 25,20 -25,20" fill="#8b5cf6"/>
-        <circle cx="0" cy="-10" r="8" fill="#fbbf24"/>
+      <g transform="translate(150,55) rotate(180)">
+        <polygon points="0,-28 24,18 -24,18" fill="#8b5cf6" stroke="#a78bfa" stroke-width="2"/>
+        <circle cx="0" cy="-10" r="7" fill="#fbbf24" stroke="#fcd34d" stroke-width="1.5"/>
       </g>
-      <text x="100" y="130" font-size="40" fill="#fbbf24" text-anchor="middle">?</text>
-      <text x="100" y="180" font-size="16" fill="#94a3b8" text-anchor="middle">Continue the rotation</text>
+      <rect x="70" y="100" width="60" height="50" fill="none" stroke="#fbbf24" stroke-width="2" stroke-dasharray="6,4" rx="6"/>
+      <text x="100" y="132" font-size="28" fill="#fbbf24" text-anchor="middle" font-weight="bold" font-family="system-ui, sans-serif">?</text>
+      <text x="100" y="178" font-size="14" fill="#94a3b8" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="500">Continue the rotation</text>
     `),
     options: [
-      createOptionSvg(`<g transform="translate(50,50) rotate(270)"><polygon points="0,-25 20,15 -20,15" fill="#8b5cf6"/><circle cx="0" cy="-8" r="6" fill="#fbbf24"/></g>`),
-      createOptionSvg(`<g transform="translate(50,50) rotate(0)"><polygon points="0,-25 20,15 -20,15" fill="#8b5cf6"/><circle cx="0" cy="-8" r="6" fill="#fbbf24"/></g>`),
-      createOptionSvg(`<g transform="translate(50,50) rotate(180)"><polygon points="0,-25 20,15 -20,15" fill="#8b5cf6"/><circle cx="0" cy="-8" r="6" fill="#fbbf24"/></g>`),
-      createOptionSvg(`<g transform="translate(50,50) rotate(90)"><polygon points="0,-25 20,15 -20,15" fill="#ec4899"/><circle cx="0" cy="-8" r="6" fill="#fbbf24"/></g>`),
+      createOptionSvg(`<g transform="translate(50,50) rotate(270)"><polygon points="0,-24 20,16 -20,16" fill="#8b5cf6" stroke="#a78bfa" stroke-width="2"/><circle cx="0" cy="-8" r="6" fill="#fbbf24" stroke="#fcd34d" stroke-width="1.5"/></g>`),
+      createOptionSvg(`<g transform="translate(50,50) rotate(0)"><polygon points="0,-24 20,16 -20,16" fill="#8b5cf6" stroke="#a78bfa" stroke-width="2"/><circle cx="0" cy="-8" r="6" fill="#fbbf24" stroke="#fcd34d" stroke-width="1.5"/></g>`),
+      createOptionSvg(`<g transform="translate(50,50) rotate(180)"><polygon points="0,-24 20,16 -20,16" fill="#8b5cf6" stroke="#a78bfa" stroke-width="2"/><circle cx="0" cy="-8" r="6" fill="#fbbf24" stroke="#fcd34d" stroke-width="1.5"/></g>`),
+      createOptionSvg(`<g transform="translate(50,50) rotate(90)"><polygon points="0,-24 20,16 -20,16" fill="#ec4899" stroke="#f472b6" stroke-width="2"/><circle cx="0" cy="-8" r="6" fill="#fbbf24" stroke="#fcd34d" stroke-width="1.5"/></g>`),
     ],
     correctAnswer: 0,
     timeLimit: 45,
@@ -155,29 +180,30 @@ export const questions: Question[] = [
     type: 'logic',
     difficulty: 'easy',
     questionSvg: createPatternSvg(`
-      <circle cx="40" cy="50" r="15" fill="#f97316"/>
-      <circle cx="80" cy="50" r="15" fill="#f97316"/>
-      <circle cx="120" cy="50" r="15" fill="#f97316"/>
+      <circle cx="40" cy="45" r="14" fill="#f97316" stroke="#fb923c" stroke-width="2"/>
+      <circle cx="80" cy="45" r="14" fill="#f97316" stroke="#fb923c" stroke-width="2"/>
+      <circle cx="120" cy="45" r="14" fill="#f97316" stroke="#fb923c" stroke-width="2"/>
+      <circle cx="160" cy="45" r="14" fill="none" stroke="#fbbf24" stroke-width="2" stroke-dasharray="5,3"/>
+      <text x="160" y="51" font-size="20" fill="#fbbf24" text-anchor="middle" font-weight="bold">?</text>
 
-      <rect x="25" y="90" width="30" height="30" fill="#22c55e"/>
-      <rect x="65" y="90" width="30" height="30" fill="#22c55e"/>
-      <rect x="105" y="90" width="30" height="30" fill="#22c55e"/>
-      <rect x="145" y="90" width="30" height="30" fill="#22c55e"/>
+      <rect x="27" y="80" width="26" height="26" fill="#22c55e" stroke="#4ade80" stroke-width="2" rx="3"/>
+      <rect x="67" y="80" width="26" height="26" fill="#22c55e" stroke="#4ade80" stroke-width="2" rx="3"/>
+      <rect x="107" y="80" width="26" height="26" fill="#22c55e" stroke="#4ade80" stroke-width="2" rx="3"/>
+      <rect x="147" y="80" width="26" height="26" fill="#22c55e" stroke="#4ade80" stroke-width="2" rx="3"/>
 
-      <polygon points="40,145 55,180 25,180" fill="#ec4899"/>
-      <polygon points="80,145 95,180 65,180" fill="#ec4899"/>
-      <polygon points="120,145 135,180 105,180" fill="#ec4899"/>
-      <polygon points="160,145 175,180 145,180" fill="#ec4899"/>
-      <polygon points="160" y="145" fill="#ec4899"/>
+      <polygon points="40,125 54,155 26,155" fill="#ec4899" stroke="#f472b6" stroke-width="2"/>
+      <polygon points="80,125 94,155 66,155" fill="#ec4899" stroke="#f472b6" stroke-width="2"/>
+      <polygon points="120,125 134,155 106,155" fill="#ec4899" stroke="#f472b6" stroke-width="2"/>
+      <polygon points="160,125 174,155 146,155" fill="#ec4899" stroke="#f472b6" stroke-width="2"/>
+      <polygon points="40,165 54,195 26,195" fill="#ec4899" stroke="#f472b6" stroke-width="2"/>
 
-      <text x="170" y="55" font-size="30" fill="#fbbf24" text-anchor="middle">?</text>
-      <text x="100" y="195" font-size="12" fill="#94a3b8" text-anchor="middle">How many circles should there be?</text>
+      <text x="100" y="188" font-size="11" fill="#94a3b8" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="500">How many circles should there be?</text>
     `),
     options: [
-      createOptionSvg(`<text x="50" y="60" font-size="40" fill="#f97316" text-anchor="middle" font-weight="bold">5</text>`),
-      createOptionSvg(`<text x="50" y="60" font-size="40" fill="#f97316" text-anchor="middle" font-weight="bold">4</text>`),
-      createOptionSvg(`<text x="50" y="60" font-size="40" fill="#f97316" text-anchor="middle" font-weight="bold">6</text>`),
-      createOptionSvg(`<text x="50" y="60" font-size="40" fill="#f97316" text-anchor="middle" font-weight="bold">3</text>`),
+      createOptionSvg(`<text x="50" y="62" font-size="36" fill="#f97316" text-anchor="middle" font-weight="bold" font-family="system-ui, sans-serif">5</text>`),
+      createOptionSvg(`<text x="50" y="62" font-size="36" fill="#f97316" text-anchor="middle" font-weight="bold" font-family="system-ui, sans-serif">4</text>`),
+      createOptionSvg(`<text x="50" y="62" font-size="36" fill="#f97316" text-anchor="middle" font-weight="bold" font-family="system-ui, sans-serif">6</text>`),
+      createOptionSvg(`<text x="50" y="62" font-size="36" fill="#f97316" text-anchor="middle" font-weight="bold" font-family="system-ui, sans-serif">3</text>`),
     ],
     correctAnswer: 0,
     timeLimit: 30,
@@ -189,42 +215,44 @@ export const questions: Question[] = [
     type: 'spatial',
     difficulty: 'medium',
     questionSvg: createPatternSvg(`
-      <line x1="100" y1="20" x2="100" y2="180" stroke="#64748b" stroke-width="2" stroke-dasharray="5,5"/>
+      <text x="100" y="22" font-size="12" fill="#cbd5e1" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="600">Mirror Pattern</text>
+      <line x1="100" y1="35" x2="100" y2="165" stroke="#fbbf24" stroke-width="2" stroke-dasharray="6,4"/>
 
-      <rect x="20" y="40" width="60" height="40" fill="#8b5cf6" rx="5"/>
-      <circle cx="50" cy="60" r="12" fill="#fbbf24"/>
-      <circle cx="35" cy="60" r="6" fill="#ec4899"/>
+      <rect x="22" y="45" width="58" height="38" fill="#8b5cf6" stroke="#a78bfa" stroke-width="2" rx="5"/>
+      <circle cx="51" cy="64" r="11" fill="#fbbf24" stroke="#fcd34d" stroke-width="1.5"/>
+      <circle cx="37" cy="64" r="5" fill="#ec4899" stroke="#f472b6" stroke-width="1"/>
 
-      <polygon points="40,100 75,140 20,140" fill="#3b82f6"/>
-      <rect x="35" y="120" width="15" height="15" fill="#22c55e"/>
+      <polygon points="42,95 75,135 22,135" fill="#3b82f6" stroke="#60a5fa" stroke-width="2"/>
+      <rect x="37" y="115" width="14" height="14" fill="#22c55e" stroke="#4ade80" stroke-width="1.5" rx="2"/>
 
-      <text x="150" y="100" font-size="40" fill="#fbbf24" text-anchor="middle">?</text>
-      <text x="100" y="195" font-size="12" fill="#94a3b8" text-anchor="middle">Mirror the left side</text>
+      <rect x="120" y="70" width="60" height="50" fill="none" stroke="#fbbf24" stroke-width="2" stroke-dasharray="6,4" rx="6"/>
+      <text x="150" y="102" font-size="26" fill="#fbbf24" text-anchor="middle" font-weight="bold" font-family="system-ui, sans-serif">?</text>
+      <text x="100" y="185" font-size="11" fill="#94a3b8" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="500">Mirror the left side</text>
     `),
     options: [
       createOptionSvg(`
-        <rect x="20" y="10" width="60" height="40" fill="#8b5cf6" rx="5"/>
-        <circle cx="50" cy="30" r="12" fill="#fbbf24"/>
-        <circle cx="65" cy="30" r="6" fill="#ec4899"/>
-        <polygon points="60,55 25,95 80,95" fill="#3b82f6"/>
-        <rect x="50" y="75" width="15" height="15" fill="#22c55e"/>
+        <rect x="20" y="12" width="60" height="38" fill="#8b5cf6" stroke="#a78bfa" stroke-width="2" rx="5"/>
+        <circle cx="50" cy="31" r="11" fill="#fbbf24" stroke="#fcd34d" stroke-width="1.5"/>
+        <circle cx="64" cy="31" r="5" fill="#ec4899" stroke="#f472b6" stroke-width="1"/>
+        <polygon points="58,55 25,92 78,92" fill="#3b82f6" stroke="#60a5fa" stroke-width="2"/>
+        <rect x="49" y="73" width="14" height="14" fill="#22c55e" stroke="#4ade80" stroke-width="1.5" rx="2"/>
       `),
       createOptionSvg(`
-        <rect x="20" y="10" width="60" height="40" fill="#8b5cf6" rx="5"/>
-        <circle cx="50" cy="30" r="12" fill="#fbbf24"/>
-        <circle cx="35" cy="30" r="6" fill="#ec4899"/>
-        <polygon points="40,55 75,95 20,95" fill="#3b82f6"/>
-        <rect x="35" y="75" width="15" height="15" fill="#22c55e"/>
+        <rect x="20" y="12" width="60" height="38" fill="#8b5cf6" stroke="#a78bfa" stroke-width="2" rx="5"/>
+        <circle cx="50" cy="31" r="11" fill="#fbbf24" stroke="#fcd34d" stroke-width="1.5"/>
+        <circle cx="36" cy="31" r="5" fill="#ec4899" stroke="#f472b6" stroke-width="1"/>
+        <polygon points="42,55 75,92 22,92" fill="#3b82f6" stroke="#60a5fa" stroke-width="2"/>
+        <rect x="37" y="73" width="14" height="14" fill="#22c55e" stroke="#4ade80" stroke-width="1.5" rx="2"/>
       `),
       createOptionSvg(`
-        <rect x="20" y="10" width="60" height="40" fill="#ec4899" rx="5"/>
-        <circle cx="50" cy="30" r="12" fill="#fbbf24"/>
-        <circle cx="65" cy="30" r="6" fill="#8b5cf6"/>
+        <rect x="20" y="12" width="60" height="38" fill="#ec4899" stroke="#f472b6" stroke-width="2" rx="5"/>
+        <circle cx="50" cy="31" r="11" fill="#fbbf24" stroke="#fcd34d" stroke-width="1.5"/>
+        <circle cx="64" cy="31" r="5" fill="#8b5cf6" stroke="#a78bfa" stroke-width="1"/>
       `),
       createOptionSvg(`
-        <rect x="20" y="10" width="60" height="40" fill="#8b5cf6" rx="5"/>
-        <circle cx="50" cy="30" r="12" fill="#ec4899"/>
-        <circle cx="65" cy="30" r="6" fill="#fbbf24"/>
+        <rect x="20" y="12" width="60" height="38" fill="#8b5cf6" stroke="#a78bfa" stroke-width="2" rx="5"/>
+        <circle cx="50" cy="31" r="11" fill="#ec4899" stroke="#f472b6" stroke-width="1.5"/>
+        <circle cx="64" cy="31" r="5" fill="#fbbf24" stroke="#fcd34d" stroke-width="1"/>
       `),
     ],
     correctAnswer: 0,
@@ -277,32 +305,32 @@ export const questions: Question[] = [
     type: 'analogy',
     difficulty: 'hard',
     questionSvg: createPatternSvg(`
-      <text x="100" y="25" font-size="14" fill="#94a3b8" text-anchor="middle">A is to B as C is to ?</text>
+      <text x="100" y="22" font-size="11" fill="#cbd5e1" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="600">A is to B as C is to ?</text>
 
-      <rect x="15" y="40" width="70" height="70" fill="#1e293b" stroke="#64748b" stroke-width="2" rx="5"/>
-      <text x="50" y="55" font-size="12" fill="#64748b" text-anchor="middle">A</text>
-      <rect x="25" y="60" width="50" height="40" fill="#ec4899"/>
+      <rect x="18" y="35" width="65" height="65" fill="#0f172a" stroke="#475569" stroke-width="2" rx="6"/>
+      <text x="50" y="48" font-size="11" fill="#94a3b8" text-anchor="middle" font-weight="600" font-family="system-ui, sans-serif">A</text>
+      <rect x="28" y="55" width="44" height="35" fill="#ec4899" stroke="#f472b6" stroke-width="1.5" rx="2"/>
 
-      <text x="100" y="75" font-size="24" fill="#fbbf24">→</text>
+      <text x="100" y="70" font-size="20" fill="#fbbf24" font-weight="bold" font-family="system-ui, sans-serif">→</text>
 
-      <rect x="115" y="40" width="70" height="70" fill="#1e293b" stroke="#64748b" stroke-width="2" rx="5"/>
-      <text x="150" y="55" font-size="12" fill="#64748b" text-anchor="middle">B</text>
-      <circle cx="150" cy="80" r="25" fill="#ec4899"/>
+      <rect x="117" y="35" width="65" height="65" fill="#0f172a" stroke="#475569" stroke-width="2" rx="6"/>
+      <text x="150" y="48" font-size="11" fill="#94a3b8" text-anchor="middle" font-weight="600" font-family="system-ui, sans-serif">B</text>
+      <circle cx="150" cy="75" r="22" fill="#ec4899" stroke="#f472b6" stroke-width="1.5"/>
 
-      <rect x="15" y="120" width="70" height="70" fill="#1e293b" stroke="#64748b" stroke-width="2" rx="5"/>
-      <text x="50" y="135" font-size="12" fill="#64748b" text-anchor="middle">C</text>
-      <polygon points="50,145 75,175 25,175" fill="#3b82f6"/>
+      <rect x="18" y="115" width="65" height="65" fill="#0f172a" stroke="#475569" stroke-width="2" rx="6"/>
+      <text x="50" y="128" font-size="11" fill="#94a3b8" text-anchor="middle" font-weight="600" font-family="system-ui, sans-serif">C</text>
+      <polygon points="50,140 72,170 28,170" fill="#3b82f6" stroke="#60a5fa" stroke-width="1.5"/>
 
-      <text x="100" y="155" font-size="24" fill="#fbbf24">→</text>
+      <text x="100" y="150" font-size="20" fill="#fbbf24" font-weight="bold" font-family="system-ui, sans-serif">→</text>
 
-      <rect x="115" y="120" width="70" height="70" fill="#1e293b" stroke="#fbbf24" stroke-width="3" rx="5"/>
-      <text x="150" y="165" font-size="30" fill="#fbbf24" text-anchor="middle">?</text>
+      <rect x="117" y="115" width="65" height="65" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5" rx="6"/>
+      <text x="150" y="156" font-size="26" fill="#fbbf24" text-anchor="middle" font-weight="bold" font-family="system-ui, sans-serif">?</text>
     `),
     options: [
-      createOptionSvg(`<circle cx="50" cy="50" r="25" fill="#3b82f6"/>`),
-      createOptionSvg(`<rect x="25" y="30" width="50" height="40" fill="#3b82f6"/>`),
-      createOptionSvg(`<polygon points="50,20 80,70 20,70" fill="#ec4899"/>`),
-      createOptionSvg(`<circle cx="50" cy="50" r="25" fill="#ec4899"/>`),
+      createOptionSvg(`<circle cx="50" cy="50" r="24" fill="#3b82f6" stroke="#60a5fa" stroke-width="2"/>`),
+      createOptionSvg(`<rect x="24" y="30" width="52" height="40" fill="#3b82f6" stroke="#60a5fa" stroke-width="2" rx="3"/>`),
+      createOptionSvg(`<polygon points="50,18 80,72 20,72" fill="#ec4899" stroke="#f472b6" stroke-width="2"/>`),
+      createOptionSvg(`<circle cx="50" cy="50" r="24" fill="#ec4899" stroke="#f472b6" stroke-width="2"/>`),
     ],
     correctAnswer: 0,
     timeLimit: 60,
@@ -314,19 +342,20 @@ export const questions: Question[] = [
     type: 'spatial',
     difficulty: 'hard',
     questionSvg: createPatternSvg(`
-      <text x="100" y="25" font-size="14" fill="#94a3b8" text-anchor="middle">What do you see when shapes overlap?</text>
+      <text x="100" y="28" font-size="12" fill="#cbd5e1" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="600">Overlapping Circles</text>
 
-      <circle cx="60" cy="100" r="40" fill="#ec4899" opacity="0.7"/>
-      <circle cx="100" cy="100" r="40" fill="#3b82f6" opacity="0.7"/>
-      <circle cx="140" cy="100" r="40" fill="#22c55e" opacity="0.7"/>
+      <circle cx="60" cy="100" r="38" fill="#ec4899" fill-opacity="0.6" stroke="#f472b6" stroke-width="2"/>
+      <circle cx="100" cy="100" r="38" fill="#3b82f6" fill-opacity="0.6" stroke="#60a5fa" stroke-width="2"/>
+      <circle cx="140" cy="100" r="38" fill="#22c55e" fill-opacity="0.6" stroke="#4ade80" stroke-width="2"/>
 
-      <text x="100" y="170" font-size="14" fill="#94a3b8" text-anchor="middle">How many distinct regions are created?</text>
+      <text x="100" y="168" font-size="12" fill="#94a3b8" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="500">How many distinct regions</text>
+      <text x="100" y="184" font-size="12" fill="#94a3b8" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="500">are created?</text>
     `),
     options: [
-      createOptionSvg(`<text x="50" y="60" font-size="40" fill="#fbbf24" text-anchor="middle" font-weight="bold">7</text>`),
-      createOptionSvg(`<text x="50" y="60" font-size="40" fill="#fbbf24" text-anchor="middle" font-weight="bold">5</text>`),
-      createOptionSvg(`<text x="50" y="60" font-size="40" fill="#fbbf24" text-anchor="middle" font-weight="bold">6</text>`),
-      createOptionSvg(`<text x="50" y="60" font-size="40" fill="#fbbf24" text-anchor="middle" font-weight="bold">8</text>`),
+      createOptionSvg(`<text x="50" y="62" font-size="36" fill="#fbbf24" text-anchor="middle" font-weight="bold" font-family="system-ui, sans-serif">7</text>`),
+      createOptionSvg(`<text x="50" y="62" font-size="36" fill="#fbbf24" text-anchor="middle" font-weight="bold" font-family="system-ui, sans-serif">5</text>`),
+      createOptionSvg(`<text x="50" y="62" font-size="36" fill="#fbbf24" text-anchor="middle" font-weight="bold" font-family="system-ui, sans-serif">6</text>`),
+      createOptionSvg(`<text x="50" y="62" font-size="36" fill="#fbbf24" text-anchor="middle" font-weight="bold" font-family="system-ui, sans-serif">8</text>`),
     ],
     correctAnswer: 0,
     timeLimit: 60,
@@ -414,21 +443,22 @@ export const questions: Question[] = [
     type: 'spatial',
     difficulty: 'hard',
     questionSvg: createPatternSvg(`
-      <text x="100" y="25" font-size="14" fill="#94a3b8" text-anchor="middle">If folded along the dotted line, which pattern appears?</text>
+      <text x="100" y="22" font-size="11" fill="#cbd5e1" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="600">Folding Pattern</text>
 
-      <rect x="40" y="40" width="120" height="60" fill="#334155" stroke="#64748b" rx="5"/>
-      <line x1="100" y1="40" x2="100" y2="100" stroke="#fbbf24" stroke-width="2" stroke-dasharray="5,5"/>
+      <rect x="40" y="45" width="120" height="55" fill="#1e293b" stroke="#475569" stroke-width="2" rx="6"/>
+      <line x1="100" y1="45" x2="100" y2="100" stroke="#fbbf24" stroke-width="2.5" stroke-dasharray="6,4"/>
 
-      <circle cx="60" cy="70" r="12" fill="#ec4899"/>
-      <rect x="75" y="58" width="15" height="24" fill="#3b82f6"/>
+      <circle cx="62" cy="72" r="11" fill="#ec4899" stroke="#f472b6" stroke-width="1.5"/>
+      <rect x="77" y="60" width="14" height="24" fill="#3b82f6" stroke="#60a5fa" stroke-width="1.5" rx="2"/>
 
-      <text x="100" y="140" font-size="14" fill="#94a3b8" text-anchor="middle">What will be on the right side after folding?</text>
+      <text x="100" y="132" font-size="11" fill="#94a3b8" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="500">If folded along the dotted line,</text>
+      <text x="100" y="148" font-size="11" fill="#94a3b8" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="500">what appears on the right?</text>
     `),
     options: [
-      createOptionSvg(`<rect x="20" y="25" width="60" height="50" fill="#334155" stroke="#64748b" rx="5"/><rect x="30" y="38" width="15" height="24" fill="#3b82f6"/><circle cx="60" cy="50" r="12" fill="#ec4899"/>`),
-      createOptionSvg(`<rect x="20" y="25" width="60" height="50" fill="#334155" stroke="#64748b" rx="5"/><circle cx="60" cy="50" r="12" fill="#ec4899"/><rect x="55" y="38" width="15" height="24" fill="#3b82f6"/>`),
-      createOptionSvg(`<rect x="20" y="25" width="60" height="50" fill="#334155" stroke="#64748b" rx="5"/><circle cx="40" cy="50" r="12" fill="#ec4899"/><rect x="55" y="38" width="15" height="24" fill="#3b82f6"/>`),
-      createOptionSvg(`<rect x="20" y="25" width="60" height="50" fill="#334155" stroke="#64748b" rx="5"/><circle cx="40" cy="50" r="12" fill="#3b82f6"/><rect x="55" y="38" width="15" height="24" fill="#ec4899"/>`),
+      createOptionSvg(`<rect x="18" y="25" width="64" height="50" fill="#1e293b" stroke="#475569" stroke-width="2" rx="5"/><rect x="28" y="38" width="14" height="24" fill="#3b82f6" stroke="#60a5fa" stroke-width="1.5" rx="2"/><circle cx="62" cy="50" r="11" fill="#ec4899" stroke="#f472b6" stroke-width="1.5"/>`),
+      createOptionSvg(`<rect x="18" y="25" width="64" height="50" fill="#1e293b" stroke="#475569" stroke-width="2" rx="5"/><circle cx="62" cy="50" r="11" fill="#ec4899" stroke="#f472b6" stroke-width="1.5"/><rect x="54" y="38" width="14" height="24" fill="#3b82f6" stroke="#60a5fa" stroke-width="1.5" rx="2"/>`),
+      createOptionSvg(`<rect x="18" y="25" width="64" height="50" fill="#1e293b" stroke="#475569" stroke-width="2" rx="5"/><circle cx="38" cy="50" r="11" fill="#ec4899" stroke="#f472b6" stroke-width="1.5"/><rect x="54" y="38" width="14" height="24" fill="#3b82f6" stroke="#60a5fa" stroke-width="1.5" rx="2"/>`),
+      createOptionSvg(`<rect x="18" y="25" width="64" height="50" fill="#1e293b" stroke="#475569" stroke-width="2" rx="5"/><circle cx="38" cy="50" r="11" fill="#3b82f6" stroke="#60a5fa" stroke-width="1.5"/><rect x="54" y="38" width="14" height="24" fill="#ec4899" stroke="#f472b6" stroke-width="1.5" rx="2"/>`),
     ],
     correctAnswer: 0,
     timeLimit: 60,
@@ -440,22 +470,22 @@ export const questions: Question[] = [
     type: 'logic',
     difficulty: 'easy',
     questionSvg: createPatternSvg(`
-      <text x="100" y="25" font-size="14" fill="#94a3b8" text-anchor="middle">Count all the triangles</text>
+      <text x="100" y="28" font-size="12" fill="#cbd5e1" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="600">Count All Triangles</text>
 
-      <polygon points="100,40 160,150 40,150" fill="none" stroke="#8b5cf6" stroke-width="3"/>
-      <line x1="70" y1="95" x2="130" y2="95" stroke="#8b5cf6" stroke-width="3"/>
-      <line x1="100" y1="40" x2="70" y2="95" stroke="#8b5cf6" stroke-width="3"/>
-      <line x1="100" y1="40" x2="130" y2="95" stroke="#8b5cf6" stroke-width="3"/>
-      <line x1="100" y1="150" x2="70" y2="95" stroke="#8b5cf6" stroke-width="3"/>
-      <line x1="100" y1="150" x2="130" y2="95" stroke="#8b5cf6" stroke-width="3"/>
+      <polygon points="100,42 158,148 42,148" fill="none" stroke="#8b5cf6" stroke-width="3"/>
+      <line x1="71" y1="95" x2="129" y2="95" stroke="#a78bfa" stroke-width="2.5"/>
+      <line x1="100" y1="42" x2="71" y2="95" stroke="#a78bfa" stroke-width="2.5"/>
+      <line x1="100" y1="42" x2="129" y2="95" stroke="#a78bfa" stroke-width="2.5"/>
+      <line x1="100" y1="148" x2="71" y2="95" stroke="#a78bfa" stroke-width="2.5"/>
+      <line x1="100" y1="148" x2="129" y2="95" stroke="#a78bfa" stroke-width="2.5"/>
 
-      <text x="100" y="180" font-size="14" fill="#94a3b8" text-anchor="middle">How many triangles can you find?</text>
+      <text x="100" y="175" font-size="12" fill="#94a3b8" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="500">How many triangles can you find?</text>
     `),
     options: [
-      createOptionSvg(`<text x="50" y="60" font-size="40" fill="#8b5cf6" text-anchor="middle" font-weight="bold">9</text>`),
-      createOptionSvg(`<text x="50" y="60" font-size="40" fill="#8b5cf6" text-anchor="middle" font-weight="bold">6</text>`),
-      createOptionSvg(`<text x="50" y="60" font-size="40" fill="#8b5cf6" text-anchor="middle" font-weight="bold">7</text>`),
-      createOptionSvg(`<text x="50" y="60" font-size="40" fill="#8b5cf6" text-anchor="middle" font-weight="bold">8</text>`),
+      createOptionSvg(`<text x="50" y="62" font-size="36" fill="#8b5cf6" text-anchor="middle" font-weight="bold" font-family="system-ui, sans-serif">9</text>`),
+      createOptionSvg(`<text x="50" y="62" font-size="36" fill="#8b5cf6" text-anchor="middle" font-weight="bold" font-family="system-ui, sans-serif">6</text>`),
+      createOptionSvg(`<text x="50" y="62" font-size="36" fill="#8b5cf6" text-anchor="middle" font-weight="bold" font-family="system-ui, sans-serif">7</text>`),
+      createOptionSvg(`<text x="50" y="62" font-size="36" fill="#8b5cf6" text-anchor="middle" font-weight="bold" font-family="system-ui, sans-serif">8</text>`),
     ],
     correctAnswer: 0,
     timeLimit: 45,
@@ -467,41 +497,41 @@ export const questions: Question[] = [
     type: 'logic',
     difficulty: 'medium',
     questionSvg: createPatternSvg(`
-      <text x="100" y="25" font-size="14" fill="#94a3b8" text-anchor="middle">Which shape doesn't belong?</text>
+      <text x="100" y="25" font-size="12" fill="#cbd5e1" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="600">Which shape doesn't belong?</text>
 
-      <g transform="translate(30, 50)">
-        <rect x="0" y="0" width="60" height="60" fill="#334155" stroke="#64748b" rx="5"/>
-        <text x="30" y="15" font-size="12" fill="#64748b" text-anchor="middle">A</text>
-        <circle cx="30" cy="40" r="18" fill="none" stroke="#ec4899" stroke-width="3"/>
-        <circle cx="30" cy="40" r="8" fill="#ec4899"/>
+      <g transform="translate(28, 42)">
+        <rect x="0" y="0" width="62" height="62" fill="#0f172a" stroke="#475569" stroke-width="2" rx="6"/>
+        <text x="31" y="16" font-size="11" fill="#94a3b8" text-anchor="middle" font-weight="600" font-family="system-ui, sans-serif">A</text>
+        <circle cx="31" cy="42" r="16" fill="none" stroke="#ec4899" stroke-width="2.5"/>
+        <circle cx="31" cy="42" r="7" fill="#ec4899"/>
       </g>
 
-      <g transform="translate(110, 50)">
-        <rect x="0" y="0" width="60" height="60" fill="#334155" stroke="#64748b" rx="5"/>
-        <text x="30" y="15" font-size="12" fill="#64748b" text-anchor="middle">B</text>
-        <rect x="12" y="22" width="36" height="36" fill="none" stroke="#3b82f6" stroke-width="3"/>
-        <rect x="22" y="32" width="16" height="16" fill="#3b82f6"/>
+      <g transform="translate(110, 42)">
+        <rect x="0" y="0" width="62" height="62" fill="#0f172a" stroke="#475569" stroke-width="2" rx="6"/>
+        <text x="31" y="16" font-size="11" fill="#94a3b8" text-anchor="middle" font-weight="600" font-family="system-ui, sans-serif">B</text>
+        <rect x="13" y="24" width="36" height="36" fill="none" stroke="#3b82f6" stroke-width="2.5" rx="2"/>
+        <rect x="22" y="33" width="18" height="18" fill="#3b82f6" rx="2"/>
       </g>
 
-      <g transform="translate(30, 120)">
-        <rect x="0" y="0" width="60" height="60" fill="#334155" stroke="#64748b" rx="5"/>
-        <text x="30" y="15" font-size="12" fill="#64748b" text-anchor="middle">C</text>
-        <polygon points="30,22 48,58 12,58" fill="none" stroke="#22c55e" stroke-width="3"/>
-        <polygon points="30,32 38,48 22,48" fill="#22c55e"/>
+      <g transform="translate(28, 115)">
+        <rect x="0" y="0" width="62" height="62" fill="#0f172a" stroke="#475569" stroke-width="2" rx="6"/>
+        <text x="31" y="16" font-size="11" fill="#94a3b8" text-anchor="middle" font-weight="600" font-family="system-ui, sans-serif">C</text>
+        <polygon points="31,24 48,58 14,58" fill="none" stroke="#22c55e" stroke-width="2.5"/>
+        <polygon points="31,34 39,50 23,50" fill="#22c55e"/>
       </g>
 
-      <g transform="translate(110, 120)">
-        <rect x="0" y="0" width="60" height="60" fill="#334155" stroke="#64748b" rx="5"/>
-        <text x="30" y="15" font-size="12" fill="#64748b" text-anchor="middle">D</text>
-        <polygon points="30,22 50,40 30,58 10,40" fill="none" stroke="#f97316" stroke-width="3"/>
-        <circle cx="30" cy="40" r="8" fill="#f97316"/>
+      <g transform="translate(110, 115)">
+        <rect x="0" y="0" width="62" height="62" fill="#0f172a" stroke="#475569" stroke-width="2" rx="6"/>
+        <text x="31" y="16" font-size="11" fill="#94a3b8" text-anchor="middle" font-weight="600" font-family="system-ui, sans-serif">D</text>
+        <polygon points="31,24 50,42 31,60 12,42" fill="none" stroke="#f97316" stroke-width="2.5"/>
+        <circle cx="31" cy="42" r="7" fill="#f97316"/>
       </g>
     `),
     options: [
-      createOptionSvg(`<text x="50" y="60" font-size="40" fill="#f97316" text-anchor="middle" font-weight="bold">D</text>`),
-      createOptionSvg(`<text x="50" y="60" font-size="40" fill="#ec4899" text-anchor="middle" font-weight="bold">A</text>`),
-      createOptionSvg(`<text x="50" y="60" font-size="40" fill="#3b82f6" text-anchor="middle" font-weight="bold">B</text>`),
-      createOptionSvg(`<text x="50" y="60" font-size="40" fill="#22c55e" text-anchor="middle" font-weight="bold">C</text>`),
+      createOptionSvg(`<text x="50" y="62" font-size="36" fill="#f97316" text-anchor="middle" font-weight="bold" font-family="system-ui, sans-serif">D</text>`),
+      createOptionSvg(`<text x="50" y="62" font-size="36" fill="#ec4899" text-anchor="middle" font-weight="bold" font-family="system-ui, sans-serif">A</text>`),
+      createOptionSvg(`<text x="50" y="62" font-size="36" fill="#3b82f6" text-anchor="middle" font-weight="bold" font-family="system-ui, sans-serif">B</text>`),
+      createOptionSvg(`<text x="50" y="62" font-size="36" fill="#22c55e" text-anchor="middle" font-weight="bold" font-family="system-ui, sans-serif">C</text>`),
     ],
     correctAnswer: 0,
     timeLimit: 45,
