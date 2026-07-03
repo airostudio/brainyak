@@ -196,9 +196,11 @@ export default function TestScreen() {
             >
               {/* Question Card */}
               <div className="flex-1 bg-slate-800/40 backdrop-blur-sm rounded-2xl sm:rounded-3xl border border-slate-700/50 p-3 sm:p-6 flex items-center justify-center min-h-[200px] sm:min-h-[300px]">
-                <div
-                  className="w-full max-w-[260px] sm:max-w-[320px] md:max-w-[380px] aspect-square"
-                  dangerouslySetInnerHTML={{ __html: question.questionSvg }}
+                <img
+                  src={question.questionImage}
+                  alt={`Question ${currentQuestion + 1}`}
+                  draggable={false}
+                  className="w-full max-w-[260px] sm:max-w-[320px] md:max-w-[380px] aspect-square object-contain rounded-2xl select-none shadow-2xl shadow-black/30"
                 />
               </div>
             </motion.div>
@@ -237,10 +239,12 @@ export default function TestScreen() {
                       ? 'border-violet-500/50 bg-violet-500/10'
                       : 'border-slate-700/50 group-hover:border-slate-600'
                   }`}>
-                    {/* Option SVG */}
-                    <div
-                      className="w-full aspect-square"
-                      dangerouslySetInnerHTML={{ __html: option }}
+                    {/* Option Image */}
+                    <img
+                      src={option}
+                      alt={`Option ${String.fromCharCode(65 + index)}`}
+                      draggable={false}
+                      className="w-full aspect-square object-contain rounded-lg select-none"
                     />
                   </div>
 
