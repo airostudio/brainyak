@@ -58,7 +58,7 @@ const getPercentile = (iq: number) => {
 
 export async function POST(request: Request) {
   try {
-    const { email, name, score } = await request.json()
+    const { email, name, score, bundle = false, unlockedTest } = await request.json()
 
     if (!email || !name || score === undefined) {
       return NextResponse.json(
@@ -66,6 +66,19 @@ export async function POST(request: Request) {
         { status: 400 }
       )
     }
+
+    // Optional confirmation banner when the user unlocks extra tests.
+    const unlockBannerHtml = bundle
+      ? `<div style="background: linear-gradient(90deg, rgba(34,197,94,0.15), rgba(16,185,129,0.15)); border: 1px solid rgba(34,197,94,0.4); border-radius: 12px; padding: 20px; margin-bottom: 24px; text-align: center;">
+          <div style="font-size: 28px;">🎉</div>
+          <h3 style="margin: 8px 0 4px 0; color: #22c55e; font-size: 18px;">Ultimate Package Unlocked</h3>
+          <p style="margin: 0; color: #cbd5e1; font-size: 14px;">All 20 tests are now unlocked on your account. Sign in to view your results for every one.</p>
+        </div>`
+      : unlockedTest
+      ? `<div style="background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.4); border-radius: 12px; padding: 16px; margin-bottom: 24px; text-align: center;">
+          <p style="margin: 0; color: #22c55e; font-size: 14px;">✅ You unlocked <strong>${unlockedTest}</strong>. Your results are ready in the app.</p>
+        </div>`
+      : ''
 
     const iq = calculateIQ(score)
     const category = getIQCategory(iq)
@@ -124,6 +137,8 @@ export async function POST(request: Request) {
                   <h2 style="margin: 0 0 20px 0; color: #ffffff; font-size: 24px; text-align: center;">
                     Congratulations, ${name}! 🎉
                   </h2>
+
+                  ${unlockBannerHtml}
 
                   <!-- IQ Score -->
                   <div style="text-align: center; margin-bottom: 30px;">
@@ -208,17 +223,17 @@ export async function POST(request: Request) {
                     </table>
 
                     <!-- Bundle Offer -->
-                    <div style="background: linear-gradient(90deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2)); border: 2px solid #8b5cf6; border-radius: 12px; padding: 20px; margin-top: 20px; text-align: center;">
+                    ${bundle ? '' : `<div style="background: linear-gradient(90deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2)); border: 2px solid #8b5cf6; border-radius: 12px; padding: 20px; margin-top: 20px; text-align: center;">
                       <h3 style="margin: 0 0 10px 0; color: #ffffff; font-size: 20px;">
-                        🚀 Complete Bundle Deal
+                        🚀 Ultimate Package
                       </h3>
                       <p style="margin: 0 0 15px 0; color: #cbd5e1;">Get all 20 tests for one amazing price!</p>
                       <div>
                         <span style="text-decoration: line-through; color: #64748b;">$${INDIVIDUAL_TOTAL_PRICE.toFixed(2)}</span>
                         <span style="font-size: 36px; font-weight: bold; color: #a855f7; margin: 0 10px;">$${BUNDLE_TOTAL_PRICE.toFixed(2)}</span>
-                        <span style="color: #22c55e; font-weight: bold;">Save 75%!</span>
+                        <span style="color: #22c55e; font-weight: bold;">Save ${BUNDLE_SAVINGS_PERCENT}%!</span>
                       </div>
-                    </div>
+                    </div>`}
 
                   </div>
                 </td>
@@ -280,10 +295,16 @@ Thank you for taking the BrainyAK IQ Test!
     try {
       const transporter = createTransporter()
 
+      const subject = bundle
+        ? `🎉 Ultimate Package unlocked — all 20 tests are yours, ${name}!`
+        : unlockedTest
+        ? `✅ ${unlockedTest} unlocked — your results are ready!`
+        : `🧠 Your IQ Test Results - Score: ${iq} (${category.label})`
+
       await transporter.sendMail({
         from: process.env.EMAIL_FROM || '"BrainyAK" <noreply@brainyak.com>',
         to: email,
-        subject: `🧠 Your IQ Test Results - Score: ${iq} (${category.label})`,
+        subject,
         text: textEmail,
         html: htmlEmail,
       })

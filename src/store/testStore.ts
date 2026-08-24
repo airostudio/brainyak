@@ -44,6 +44,13 @@ interface TestState {
   // Payment
   paymentComplete: boolean
   setPaymentComplete: (complete: boolean) => void
+
+  // Bonus test unlocking (Ultimate Package / individual bonus tests)
+  bundleUnlocked: boolean
+  unlockedTestIds: number[]
+  unlockAllTests: () => void
+  unlockTest: (id: number) => void
+  isTestUnlocked: (id: number) => boolean
 }
 
 export const useTestStore = create<TestState>((set, get) => ({
@@ -94,8 +101,29 @@ export const useTestStore = create<TestState>((set, get) => ({
     answers: [],
     testStartTime: null,
     paymentComplete: false,
+    bundleUnlocked: false,
+    unlockedTestIds: [],
   }),
 
   paymentComplete: false,
   setPaymentComplete: (complete) => set({ paymentComplete: complete }),
+
+  // Bonus test unlocking
+  bundleUnlocked: false,
+  unlockedTestIds: [],
+
+  // Ultimate Package: unlock every bonus test at once
+  unlockAllTests: () => set({ bundleUnlocked: true }),
+
+  // Unlock a single bonus test (individual purchase)
+  unlockTest: (id) => set((state) =>
+    state.unlockedTestIds.includes(id)
+      ? state
+      : { unlockedTestIds: [...state.unlockedTestIds, id] }
+  ),
+
+  isTestUnlocked: (id) => {
+    const { bundleUnlocked, unlockedTestIds } = get()
+    return bundleUnlocked || unlockedTestIds.includes(id)
+  },
 }))

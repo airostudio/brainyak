@@ -7,11 +7,21 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
 })
 
 // Product ID: prod_TF7lYuAyy0AzZW
-// Price: $1.99 USD
+// Products & pricing (all amounts in cents)
+type ProductKey = 'iq_test' | 'single_test' | 'bundle'
+
+const PRODUCTS: Record<ProductKey, { amount: number; description: string }> = {
+  // Original IQ test result unlock — $1.99
+  iq_test: { amount: 199, description: 'BrainyAK IQ Test Results' },
+  // A single bonus test unlock — $1.99
+  single_test: { amount: 199, description: 'BrainyAK Bonus Test' },
+  // Ultimate Package — unlocks all 20 tests — $29.80
+  bundle: { amount: 2980, description: 'BrainyAK Ultimate Package — All 20 Tests' },
+}
 
 export async function POST(request: Request) {
   try {
-    const { email, name } = await request.json()
+    const { email, name, product = 'iq_test', testId, testName } = await request.json()
 
     if (!email || !name) {
       return NextResponse.json(
@@ -19,6 +29,17 @@ export async function POST(request: Request) {
         { status: 400 }
       )
     }
+
+    const productKey: ProductKey = (['iq_test', 'single_test', 'bundle'] as ProductKey[]).includes(product)
+      ? product
+      : 'iq_test'
+    const { amount, description: baseDescription } = PRODUCTS[productKey]
+
+    // For a single bonus test, personalise the description with its name
+    const description =
+      productKey === 'single_test' && testName
+        ? `BrainyAK Bonus Test — ${testName}`
+        : baseDescription
 
     // Create or retrieve customer
     const customers = await stripe.customers.list({
@@ -39,15 +60,18 @@ export async function POST(request: Request) {
       })
     }
 
-    // Create payment intent for $1.99
+    // Create payment intent for the selected product
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: 199, // $1.99 in cents
+      amount,
       currency: 'usd',
       customer: customer.id,
-      description: 'BrainyAK IQ Test Results',
+      description,
       metadata: {
         product_id: 'prod_TF7lYuAyy0AzZW',
-        test_type: 'iq_test',
+        product: productKey,
+        test_type: productKey === 'iq_test' ? 'iq_test' : 'bonus_test',
+        test_id: testId != null ? String(testId) : '',
+        test_name: testName || '',
         customer_email: email,
         customer_name: name,
       },
@@ -59,6 +83,8 @@ export async function POST(request: Request) {
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
       customerId: customer.id,
+      amount,
+      product: productKey,
     })
   } catch (error) {
     console.error('Error creating payment intent:', error)

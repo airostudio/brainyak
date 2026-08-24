@@ -4,12 +4,34 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import Confetti from 'react-confetti'
 import { useTestStore } from '@/store/testStore'
-import { testOffers, INDIVIDUAL_TOTAL_PRICE, BUNDLE_TOTAL_PRICE, BUNDLE_SAVINGS_PERCENT } from '@/data/testOffers'
+import {
+  testOffers,
+  INDIVIDUAL_TOTAL_PRICE,
+  BUNDLE_TOTAL_PRICE,
+  BUNDLE_SAVINGS_PERCENT,
+  INDIVIDUAL_TEST_PRICE,
+  type TestOffer,
+} from '@/data/testOffers'
+import CheckoutModal, { type CheckoutConfig } from '@/components/CheckoutModal'
+import TestResultModal from '@/components/TestResultModal'
 
 export default function SuccessScreen() {
-  const { userInfo, calculateScore, calculateIQ, answers, resetTest } = useTestStore()
+  const {
+    userInfo,
+    calculateScore,
+    calculateIQ,
+    answers,
+    resetTest,
+    bundleUnlocked,
+    unlockedTestIds,
+    unlockAllTests,
+    unlockTest,
+    isTestUnlocked,
+  } = useTestStore()
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 })
   const [showConfetti, setShowConfetti] = useState(true)
+  const [checkout, setCheckout] = useState<CheckoutConfig | null>(null)
+  const [resultOffer, setResultOffer] = useState<TestOffer | null>(null)
 
   const score = calculateScore()
   const iq = calculateIQ()
@@ -59,6 +81,59 @@ export default function SuccessScreen() {
     if (iq >= 90) return 25
     if (iq >= 85) return 16
     return 10
+  }
+
+  const unlockedCount = bundleUnlocked ? testOffers.length : unlockedTestIds.length
+
+  // Notify the results endpoint that extra tests were unlocked (best-effort).
+  const emailUnlockedTests = (all: boolean, testName?: string) => {
+    fetch('/api/send-results', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: userInfo?.email,
+        name: userInfo?.name,
+        score,
+        bundle: all,
+        unlockedTest: testName,
+      }),
+    }).catch(() => {})
+  }
+
+  // Click on a bonus test card: view results if unlocked, otherwise buy it.
+  const handleOfferClick = (offer: TestOffer) => {
+    if (isTestUnlocked(offer.id)) {
+      setResultOffer(offer)
+      return
+    }
+    setCheckout({
+      product: 'single_test',
+      amount: INDIVIDUAL_TEST_PRICE,
+      title: offer.name,
+      description: `Unlock your ${offer.name} results`,
+      testId: offer.id,
+      testName: offer.name,
+      onSuccess: () => {
+        unlockTest(offer.id)
+        emailUnlockedTests(false, offer.name)
+        setResultOffer(offer)
+      },
+    })
+  }
+
+  // Buy the Ultimate Package: unlocks all 20 tests at once.
+  const handleBundleClick = () => {
+    if (bundleUnlocked) return
+    setCheckout({
+      product: 'bundle',
+      amount: BUNDLE_TOTAL_PRICE,
+      title: 'Ultimate Package',
+      description: 'Unlock all 20 tests and get results for every one',
+      onSuccess: () => {
+        unlockAllTests()
+        emailUnlockedTests(true)
+      },
+    })
   }
 
   return (
@@ -197,45 +272,91 @@ export default function SuccessScreen() {
         >
           <div className="text-center mb-6">
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
-              Exclusive Test Offers Just For You!
+              {bundleUnlocked ? 'Your Unlocked Tests' : 'Exclusive Test Offers Just For You!'}
             </h2>
             <p className="text-gray-400">
-              Discover more about your cognitive abilities with our premium tests
+              {bundleUnlocked
+                ? 'Tap any test to view your personalized results'
+                : 'Discover more about your cognitive abilities with our premium tests'}
             </p>
           </div>
 
+          {/* Ultimate Package active banner */}
+          {unlockedCount > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 flex items-center justify-center gap-3 bg-gradient-to-r from-green-500/15 to-emerald-500/15 border border-green-500/40 rounded-xl px-4 py-3 text-center"
+            >
+              <span className="text-2xl">✅</span>
+              <div className="text-left">
+                <div className="text-green-400 font-semibold text-sm">
+                  {bundleUnlocked ? 'Ultimate Package active' : `${unlockedCount} test${unlockedCount > 1 ? 's' : ''} unlocked`}
+                </div>
+                <div className="text-gray-400 text-xs">
+                  {bundleUnlocked
+                    ? 'All 20 tests are unlocked — tap any card to see your results'
+                    : 'Tap an unlocked test to view your results'}
+                </div>
+              </div>
+            </motion.div>
+          )}
+
           {/* Test Offers Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {testOffers.map((offer, index) => (
-              <motion.div
-                key={offer.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 + index * 0.05 }}
-                className="glass-effect rounded-xl p-4 hover:bg-white/10 transition-colors group cursor-pointer"
-              >
-                <div className="flex items-start gap-3">
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${offer.gradient} flex items-center justify-center flex-shrink-0 text-2xl`}>
-                    {offer.icon}
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-white font-semibold group-hover:text-purple-300 transition-colors">
-                      {offer.name}
-                    </h3>
-                    <p className="text-gray-400 text-sm mb-2">{offer.description}</p>
-                    <div className="flex items-center gap-2">
-                      <span className="text-gray-500 line-through text-sm">${offer.originalPrice}</span>
-                      <span className="text-green-400 font-bold">${offer.price}</span>
-                      {offer.badge && (
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${offer.badgeColor}`}>
-                          {offer.badge}
-                        </span>
+            {testOffers.map((offer, index) => {
+              const unlocked = isTestUnlocked(offer.id)
+              return (
+                <motion.button
+                  key={offer.id}
+                  type="button"
+                  onClick={() => handleOfferClick(offer)}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7 + index * 0.05 }}
+                  className={`text-left rounded-xl p-4 transition-colors group cursor-pointer border ${
+                    unlocked
+                      ? 'bg-green-500/5 border-green-500/40 hover:bg-green-500/10'
+                      : 'glass-effect border-transparent hover:bg-white/10'
+                  }`}
+                >
+                  <div className="flex items-start gap-3">
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${offer.gradient} flex items-center justify-center flex-shrink-0 text-2xl`}>
+                      {offer.icon}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-white font-semibold group-hover:text-purple-300 transition-colors">
+                        {offer.name}
+                      </h3>
+                      <p className="text-gray-400 text-sm mb-2">{offer.description}</p>
+                      {unlocked ? (
+                        <div className="flex items-center gap-2">
+                          <span className="inline-flex items-center gap-1 text-green-400 font-semibold text-sm">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                            Unlocked
+                          </span>
+                          <span className="text-purple-300 text-sm font-medium group-hover:underline">
+                            View Results →
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <span className="text-gray-500 line-through text-sm">${offer.originalPrice}</span>
+                          <span className="text-green-400 font-bold">${offer.price}</span>
+                          {offer.badge && (
+                            <span className={`text-xs px-2 py-0.5 rounded-full ${offer.badgeColor}`}>
+                              {offer.badge}
+                            </span>
+                          )}
+                        </div>
                       )}
                     </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.button>
+              )
+            })}
           </div>
 
           {/* Bundle Offer */}
@@ -245,29 +366,48 @@ export default function SuccessScreen() {
             transition={{ delay: 1.2 }}
             className="mt-6 relative overflow-hidden"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-20 rounded-2xl" />
-            <div className="relative glass-effect rounded-2xl p-6 border-2 border-purple-500/50">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-2xl">🎁</span>
-                    <h3 className="text-xl font-bold text-white">Complete Bundle Deal</h3>
+            <div className={`absolute inset-0 rounded-2xl opacity-20 ${bundleUnlocked ? 'bg-gradient-to-r from-green-600 to-emerald-600' : 'bg-gradient-to-r from-purple-600 to-pink-600'}`} />
+            <div className={`relative glass-effect rounded-2xl p-6 border-2 ${bundleUnlocked ? 'border-green-500/50' : 'border-purple-500/50'}`}>
+              {bundleUnlocked ? (
+                <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-2xl">🎉</span>
+                      <h3 className="text-xl font-bold text-white">Ultimate Package Unlocked</h3>
+                    </div>
+                    <p className="text-gray-300">All 20 tests are unlocked — tap any test above to view your results.</p>
                   </div>
-                  <p className="text-gray-300">Get all 20 tests for one amazing price!</p>
+                  <div className="inline-flex items-center gap-2 bg-green-500/20 border border-green-500/40 text-green-400 px-6 py-3 rounded-xl font-bold">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Active
+                  </div>
                 </div>
-                <div className="text-center">
-                  <div className="text-gray-400 line-through text-sm">${INDIVIDUAL_TOTAL_PRICE.toFixed(2)}</div>
-                  <div className="text-4xl font-bold text-gradient from-purple-400 to-pink-400">${BUNDLE_TOTAL_PRICE.toFixed(2)}</div>
-                  <div className="text-green-400 text-sm font-semibold">Save {BUNDLE_SAVINGS_PERCENT}%!</div>
+              ) : (
+                <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-2xl">🎁</span>
+                      <h3 className="text-xl font-bold text-white">Ultimate Package</h3>
+                    </div>
+                    <p className="text-gray-300">Get all 20 tests for one amazing price!</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-gray-400 line-through text-sm">${INDIVIDUAL_TOTAL_PRICE.toFixed(2)}</div>
+                    <div className="text-4xl font-bold text-gradient from-purple-400 to-pink-400">${BUNDLE_TOTAL_PRICE.toFixed(2)}</div>
+                    <div className="text-green-400 text-sm font-semibold">Save {BUNDLE_SAVINGS_PERCENT}%!</div>
+                  </div>
+                  <motion.button
+                    onClick={handleBundleClick}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-shadow"
+                  >
+                    Get Bundle
+                  </motion.button>
                 </div>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-shadow"
-                >
-                  Get Bundle
-                </motion.button>
-              </div>
+              )}
             </div>
           </motion.div>
         </motion.div>
@@ -287,6 +427,10 @@ export default function SuccessScreen() {
           </button>
         </motion.div>
       </div>
+
+      {/* Checkout & results modals */}
+      <CheckoutModal config={checkout} onClose={() => setCheckout(null)} />
+      <TestResultModal offer={resultOffer} onClose={() => setResultOffer(null)} />
     </div>
   )
 }
